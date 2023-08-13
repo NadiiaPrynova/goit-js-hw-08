@@ -3,43 +3,43 @@ const throttle = require('lodash.throttle');
 
 const refs = {
     form: document.querySelector('.feedback-form'),
-    textarea: document.querySelector('.feedback-form textarea'),
-    input: document.querySelector('.feedback-form input')
+    textarea: document.querySelector('textarea[name="message"]'),
+    emailInput: document.querySelector('input[name="email"]')
 };
+
+const formData = {};
+// console.log(formData);
+
+populateFormOutput()
+
 refs.form.addEventListener('submit', onFormSubmit);
-refs.textarea.addEventListener('input', throttle(onTextareaInput, 500));
-refs.input.addEventListener('input', throttle(onEmailInput, 500));
+refs.form.addEventListener('input', throttle(onFormInput, 500));
+
+
 
 function onFormSubmit(evt) {
     evt.preventDefault();
+    // console.log('Send form');
     evt.currentTarget.reset();
     localStorage.removeItem('feedback-form-state');
-    localStorage.removeItem('feedback-email-state');
+
+    
 }
 
-function onTextareaInput(evt) {
-    const message = evt.target.value;
-    localStorage.setItem('feedback-form-state', message);
+function onFormInput (evt) {
+    formData[evt.target.name] = evt.target.value;
+    localStorage.setItem('feedback-form-state', JSON.stringify(formData));
+    // console.log(formData);
 }
 
-function onEmailInput(evt) {
-    const emailName = evt.target.value;
-    localStorage.setItem('feedback-email-state', JSON.stringify(emailName));
-}
 
-function populateTextarea() {
-    const savedMessage = localStorage.getItem('feedback-form-state');
-    if (savedMessage) {
-        console.log(savedMessage);
-        refs.textarea.value = savedMessage;
-    }
-}
-
-function populateEmailInput() {
-    const savedEmailName = localStorage.getItem('feedback-email-state');
-    if (savedEmailName) {
-        console.log(savedEmailName);
-        refs.input.value = savedEmailName;
+function populateFormOutput() {
+    const savedData = JSON.parse(localStorage.getItem('feedback-form-state'));
+    
+    if (savedData) {
+        console.log(savedData);
+        refs.textarea.value = savedData.message;
+        refs.emailInput.value = savedData.email;
         
     }
 }

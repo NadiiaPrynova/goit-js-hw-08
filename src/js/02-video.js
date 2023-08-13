@@ -11,6 +11,9 @@ function saveTime(obj) {
     }
 const timeVideo = localStorage.getItem('videoplayer-current-time');
 console.log(timeVideo);
+if (localStorage.getItem('videoplayer-current-time')) {
+player.setCurrentTime(timeVideo);  
+}
 player.on('timeupdate', throttle(saveTime, 1000)); 
-player.setCurrentTime(timeVideo);
+
 
